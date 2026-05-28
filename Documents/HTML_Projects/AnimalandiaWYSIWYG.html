@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animalandia Kingdom Editor</title>
+    <!-- We'll use a lightweight library called TinyMCE for the visual part, 
+         but we'll write the sync logic ourselves! -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" 
+            referrerpolicy="origin"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f1ea; /* Parchment color */
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #8B4513; /* SaddleBrown for that royal feel */
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-style: italic;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            height: 80vh;
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #8B4513;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .panel-header {
+            background-color: #8B4513;
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Visual Editor Area */
+        #visual-editor {
+            flex-grow: 1;
+            border: none;
+        }
+
+        /* Code Editor Area */
+        #code-editor {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            border: none;
+            resize: none;
+            outline: none;
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button.undo-btn {
+            background-color: #2196F3;
+        }
+        
+        button.redo-btn {
+            background-color: #FF9800;
+        }
+
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🦁 Animalandia Story Editor</h1>
+    <div class="subtitle">Write your tales of Lupus, Grevan, and the Snow Leopard!</div>
+
+    <div class="container">
+        <!-- LEFT: Visual Editor -->
+        <div class="panel">
+            <div class="panel-header">Visual Story Mode (What You See)</div>
+            <div id="visual-editor"></div>
+        </div>
+
+        <!-- RIGHT: Code Editor -->
+        <div class="panel">
+            <div class="panel-header">HTML Source Code (The Magic Behind)</div>
+            <textarea id="code-editor" placeholder="<h1>Once upon a time...</h1>"></textarea>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="undo-btn" onclick="handleUndo()">↩ Undo</button>
+        <button class="redo-btn" onclick="handleRedo()">↪ Redo</button>
+        <button onclick="resetEditor()">🔄 Reset Page</button>
+    </div>
+    
+    <div class="status" id="status-msg">Ready to write...</div>
+
+    <script>
+        // --- 1. SETUP HISTORY STACK FOR UNDO/REDO ---
+        let historyStack = [];
+        let redoStack = [];
+        const MAX_HISTORY = 50; // Limit memory to prevent crashing
+
+        function saveState() {
+            const visualContent = tinyMCE.get('visual-editor').getContent();
+            const codeContent = document.getElementById('code-editor').value;
+            
+            // Only save if it's different from the last state
+            const lastState = historyStack.length > 0 ? historyStack[historyStack.length - 1] : null;
+            if (lastState && lastState.visual === visualContent && lastState.code === codeContent) {
+                return;
+            }
+
+            historyStack.push({ visual: visualContent, code: codeContent });
+            if (historyStack.length > MAX_HISTORY) historyStack.shift(); // Remove oldest
+            
+            // Clear redo stack when new change happens
+            redoStack = [];
+            updateStatus("Saved to history");
+        }
+
+        function handleUndo() {
+            if (historyStack.length <= 1) {
+                updateStatus("Nothing to undo!");
+                return;
+            }
+
+            // Save current state to redo stack before popping
+            const currentVisual = tinyMCE.get('visual-editor').getContent();
+            const currentCode = document.getElementById('code-editor').value;
+            redoStack.push({ visual: currentVisual, code: currentCode });
+
+            // Pop the last state
+            historyStack.pop();
+            const previousState = historyStack[historyStack.length - 1];
+
+            // Restore
+            tinyMCE.get('visual-editor').setContent(previousState.visual);
+            document.getElementById('code-editor').value = previousState.code;
+            updateStatus("Undone!");
+        }
+
+        function handleRedo() {
+            if (redoStack.length === 0) {
+                updateStatus("Nothing to redo!");
+                return;
+            }
+
+            // Save current to history
+            saveState();
+
+            // Pop from redo
+            const nextState = redoStack.pop();
+            tinyMCE.get('visual-editor').setContent(nextState.visual);
+            document.getElementById('code-editor').value = nextState.code;
+            updateStatus("Redone!");
+        }
+
+        function resetEditor() {
+            if(confirm("Start a fresh story?")) {
+                historyStack = [];
+                redoStack = [];
+                tinyMCE.get('visual-editor').setContent("<h1>New Story</h1><p>Start writing here...</p>");
+                document.getElementById('code-editor').value = "<h1>New Story</h1>\n<p>Start writing here...</p>";
+                updateStatus("Reset complete.");
+            }
+        }
+
+        function updateStatus(msg) {
+            document.getElementById('status-msg').innerText = msg;
+        }
+
+        // --- 2. INITIALIZE EDITORS ---
+        tinymce.init({
+            selector: '#visual-editor',
+            height: "100%",
+            menubar: false,
+            plugins: 'lists link image table code',
+            toolbar: 'bold italic | bullist numlist | link image | undo redo',
+            branding: false,
+            setup: function(editor) {
+                // LISTENING: When Visual changes, update Code
+                editor.on('change', function() {
+                    const visualContent = editor.getContent();
+                    document.getElementById('code-editor').value = visualContent;
+                    saveState(); // Save for undo
+                });
+            }
+        });
+
+        // --- 3. LISTENING: When Code changes, update Visual ---
+        const codeEditor = document.getElementById('code-editor');
+        
+        // We use 'input' event to catch every keystroke
+        codeEditor.addEventListener('input', function() {
+            const codeContent = this.value;
+            // Update the visual editor
+            tinyMCE.get('visual-editor').setContent(codeContent);
+            saveState(); // Save for undo
+        });
+
+        // Initialize with some default content
+        window.onload = function() {
+            const initialContent = "<h1>The Kingdom of Animalandia</h1><p>Once upon a time, the <strong>Lion King</strong> ruled wisely...</p>";
+            tinyMCE.get('visual-editor').setContent(initialContent);
+            codeEditor.value = initialContent;
+            saveState(); // Save initial state
+        };
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <meta name="google-site-verification" content="siZUZgfEMKBYZqDowtewkh_aGeBKlrACqlfs19t3itE" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Candy's Dog Salon - Hands-on Neighborhood Dog Grooming</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Raleway:ital,wght@0,300;0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Reset & Variables */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 90px; /* Ensures sticky header doesn't block section titles */
+        }
+
+        :root {
+            --primary-color: #4A7C59; /* Warm pet-friendly earthy green */
+            --secondary-color: #68B0AB; /* Soft clear water teal */
+            --accent-color: #FAF3DD; /* Warm beige cream background */
+            --dark-text: #2F3E46; /* Soft charcoal readability color */
+            --light-bg: #FFFFFF;
+            --font-stack: 'Raleway', sans-serif;
+            --focus-outline: 3px solid #E76F51; /* High-contrast orange/coral for accessibility */
+        }
+
+        body {
+            font-family: var(--font-stack);
+            color: var(--dark-text);
+            line-height: 1.6;
+            background-color: var(--light-bg);
+        }
+
+        /* Keyboard Accessibility Focus States */
+        a:focus-visible, 
+        button:focus-visible, 
+        iframe:focus-visible {
+            outline: var(--focus-outline);
+            outline-offset: 4px;
+        }
+
+        /* Announcement Banner */
+        .announcement-bar {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .announcement-bar a {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        /* Header Navigation */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 10%;
+            background-color: #ffffffe7;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--dark-text);
+            margin-left: 25px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding-bottom: 4px;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Active Navigation Class applied by JavaScript */
+        nav a.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(74, 124, 89, 0.15), rgba(104, 176, 171, 0.15)), url('https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&q=80&w=1470') no-repeat center center/cover;
+            padding: 140px 10%;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 50px;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: var(--dark-text);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: #ffffff;
+            padding: 15px 35px;
+            text-decoration: none;
+            font-weight: 700;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Content Sections Layout */
+        .section {
+            padding: 90px 10%;
+        }
+
+        .section-alt {
+            background-color: var(--accent-color);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+            position: relative;
+            text-transform: uppercase;
+            color: var(--primary-color);
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            margin: 15px auto 0 auto;
+        }
+
+        /* Grid Framework */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            padding: 35px;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        /* Text Focus Styling */
+        .intro-text {
+            font-size: 1.15rem;
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        /* Before & After Gallery Layout */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .gallery-pair {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            text-align: center;
+        }
+
+        .gallery-images {
+            display: flex;
+            gap: 10px;
+        }
+
+        .gallery-images div {
+            flex: 1;
+        }
+
+        .gallery-images img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .gallery-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-top: 6px;
+            text-transform: uppercase;
+        }
+
+        .gallery-pair h4 {
+            margin-top: 15px;
+            color: var(--dark-text);
+            font-size: 1.1rem;
+        }
+
+        /* Infinite Slow-Moving Carousel Styling */
+        .carousel-ticker {
+            width: 100%;
+            overflow: hidden;
+            background: #ffffff;
+            padding: 30px 0;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .carousel-track {
+            display: flex;
+            width: max-content;
+            /* Infinite smooth scrolling effect */
+            animation: scrollMarquee 40s linear infinite;
+        }
+
+        /* Pauses movement when user hovers for better accessibility control */
+        .carousel-ticker:hover .carousel-track {
+            animation-play-state: paused;
+        }
+
+        .carousel-track img {
+            height: 160px;
+            width: 220px;
+            object-fit: cover;
+            margin: 0 15px;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.04);
+        }
+
+        @keyframes scrollMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Scrolls halfway through the duplicated list */
+        }
+
+        /* Pricing Table Blocks */
+        .pricing-block {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .price-box {
+            background: #ffffff;
+            border: 2px solid var(--secondary-color);
+            padding: 30px;
+            text-align: center;
+            flex: 1;
+            min-width: 250px;
+            max-width: 400px;
+            border-radius: 4px;
+        }
+
+        .price-box h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            color: var(--dark-text);
+        }
+
+        .price-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .price-footnote {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        /* Testimonials Section */
+        .testimonial-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .testimonial-block {
+            background: #ffffff;
+            padding: 40px;
+            border-left: 5px solid var(--secondary-color);
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.01);
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            font-style: normal;
+            font-weight: 700;
+            margin-top: 15px;
+            color: var(--primary-color);
+            text-align: right;
+            display: block;
+        }
+
+        /* Location Block Wrapper */
+        .location-block {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .location-info {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .location-info h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .hours-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .hours-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+        }
+
+        .hours-list li.closed {
+            color: #c0392b;
+            font-weight: 600;
+        }
+
+        .map-embed {
+            flex: 1.2;
+            min-width: 320px;
+            height: 350px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .map-embed iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Contact Footer Block */
+        footer {
+            background-color: var(--dark-text);
+            color: #ffffff;
+            padding: 60px 10% 40px 10%;
+            text-align: center;
+        }
+
+        .footer-content h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        .phone-display {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 20px 0;
+            text-decoration: none;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        .phone-display:hover {
+            color: var(--secondary-color);
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: #a4b0be;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+            }
+            nav {
+                margin-top: 15px;
+            }
+            nav a {
+                margin: 0 10px;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero-content {
+                padding: 25px;
+            }
+            .section {
+                padding: 60px 5%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="announcement-bar">
+        🐾 Call us directly to book your pet's appointment: <a href="tel:5104905160">(510) 490-5160</a>
+    </div>
+
+    <header>
+        <a href="#hero" class="logo">Candy's Dog Salon</a>
+        <nav id="nav-menu">
+            <a href="#about">About Us</a>
+            <a href="#services">Services</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#reviews">Reviews</a>
+            <a href="#location">Find Us</a>
+        </nav>
+    </header>
+
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1>Dependable, Hands-On Care</h1>
+            <p>Your local, traditional neighborhood grooming shop for dogs of all shapes and sizes.</p>
+            <a href="#contact" class="cta-button">Book Appointment</a>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <h2 class="section-title">Welcome to Our Salon</h2>
+        <div class="intro-text">
+            <p>Candy’s Dog Salon is a long-standing neighborhood grooming shop known for its hands-on care, friendly atmosphere, and dependable service for dogs of all sizes. Operating as a traditional local small business, the salon has built a loyal customer base through personalized attention and consistent grooming quality rather than a corporate-style pet spa experience.</p>
+        </div>
+        
+        <div class="grid-container">
+            <div class="card">
+                <h3>The Candy Touch</h3>
+                <p>Reviews consistently highlight Candy's gentle handling, patience, and deep experience with dogs of different temperaments and breeds. Nervous or difficult dogs response wonderfully to her calm approach.</p>
+            </div>
+            <div class="card">
+                <h3>Warm & Clean</h3>
+                <p>Customers frequently describe our shop environment as warm, welcoming, and pristine. Our friendly staff works hard to provide a genuine sense of care for every single animal that walks through our door.</p>
+            </div>
+            <div class="card">
+                <h3>Happy & Relaxed</h3>
+                <p>We've earned a standout reputation for compassionate treatment. Many pet owners note that their dogs leave looking adorable, polished, and—most importantly—visibly comfortable and relaxed after appointments.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section section-alt">
+        <h2 class="section-title">Our Services</h2>
+        <div class="intro-text">
+            <p>We provide comprehensive, breed-specific grooming customized completely to your dog’s coat type, size, and temperament needs.</p>
+        </div>
+        
+        <div class="grid-container">
+            <div class="card">
+                <h3>Full Grooming</h3>
+                <p>Tailored coat trimming, styling, and breed-specific grooming cuts designed to keep your dog comfortable and looking their absolute best.</p>
+            </div>
+            <div class="card">
+                <h3>Bathing & Washing</h3>
+                <p>Thorough full-service deep cleaning wash using gentle, animal-safe formulations that match your dog's skin sensitivity.</p>
+            </div>
+            <div class="card">
+                <h3>Essential Nail & Coat Care</h3>
+                <p>Professional nail care, detailed coat de-shedding, and ear checks to keep your pup's foundational health tracked and clean.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="gallery" class="section">
+        <h2 class="section-title">Before & After Transformations</h2>
+        <div class="intro-text">
+            <p>See some of our recent transformations from the neighborhood. Real results from caring, meticulous hands.</p>
+        </div>
+        <div class="gallery-container">
+            <div class="gallery-pair">
+                <div class="gallery-images">
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1541599540903-216a46ca1bf0?auto=format&fit=crop&q=80&w=400" alt="Scruffy un-groomed small terrier-mix dog before hair cut">
+                        <div class="gallery-label">Before</div>
+                    </div>
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&q=80&w=400" alt="Nicely trimmed neat small white terrier-mix dog after grooming session">
+                        <div class="gallery-label">After</div>
+                    </div>
+                </div>
+                <h4>Milo (Terrier Mix)</h4>
+            </div>
+            <div class="gallery-pair">
+                <div class="gallery-images">
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80&w=400" alt="Golden Retriever with thick overgrown coat before brush out">
+                        <div class="gallery-label">Before</div>
+                    </div>
+                    <div>
+                        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400" alt="Shiny fully brushed de-shedded Golden Retriever smiling after grooming">
+                        <div class="gallery-label">After</div>
+                    </div>
+                </div>
+                <h4>Bella (Golden Retriever)</h4>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="section section-alt">
+        <h2 class="section-title">Competitive Pricing</h2>
+        <div class="intro-text">
+            <p>We believe in maintaining honest, direct, and competitive pricing compared to larger commercial grooming chains.</p>
+        </div>
+
+        <div class="pricing-block">
+            <div class="price-box">
+                <h4>Small Dogs</h4>
+                <p>e.g., 12-lb poodle mix</p>
+                <div class="price-value">~$80</div>
+                <p>Before tip</p>
+            </div>
+            <div class="price-box">
+                <h4>Big Dogs</h4>
+                <p>e.g., Near 70 lbs</p>
+                <div class="price-value">~$120</div>
+                <p>Before tip</p>
+            </div>
+        </div>
+        
+        <div class="price-footnote">
+            <p>*Note: Exact pricing may vary depending on coat condition, specific breed characteristics, and special requested services.</p>
+        </div>
+    </section>
+
+    <div class="carousel-ticker">
+        <div class="carousel-track">
+            <img src="https://images.unsplash.com/photo-1608096299260-db34685e687d?auto=format&fit=crop&q=80&w=300" alt="Clean groomed golden puppy sitting happily">
+            <img src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?auto=format&fit=crop&q=80&w=300" alt="Small fluffy dog getting a bubbly bath">
+            <img src="https://images.unsplash.com/photo-1514984879728-be0aff75a6e8?auto=format&fit=crop&q=80&w=300" alt="Groomed sheepdog showing off a fresh cut">
+            <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=300" alt="Happy dog relaxing post-brushing">
+            <img src="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=300" alt="Smiling corgi fresh from the salon">
+            
+            <img src="https://images.unsplash.com/photo-1608096299260-db34685e687d?auto=format&fit=crop&q=80&w=300" alt="Clean groomed golden puppy sitting happily">
+            <img src="https://images.unsplash.com/photo-1596492784531-6e6eb5ea9993?auto=format&fit=crop&q=80&w=300" alt="Small fluffy dog getting a bubbly bath">
+            <img src="https://images.unsplash.com/photo-1514984879728-be0aff75a6e8?auto=format&fit=crop&q=80&w=300" alt="Groomed sheepdog showing off a fresh cut">
+            <img src="https://images.unsplash.com/photo-1544568100-847a948585b9?auto=format&fit=crop&q=80&w=300" alt="Happy dog relaxing post-brushing">
+            <img src="https://images.unsplash.com/photo-1534361960057-19889db9621e?auto=format&fit=crop&q=80&w=300" alt="Smiling corgi fresh from the salon">
+        </div>
+    </div>
+
+    <section id="reviews" class="section section-alt">
+        <h2 class="section-title">Praise From The Neighborhood</h2>
+        
+        <div class="testimonial-container">
+            <div class="testimonial-block">
+                <p>"My West Highland Terrier has been coming here for over 15 years. Candy is the only groomer who has ever been able to comfortably handle him and soothe his nervous energy."</p>
+                <span class="testimonial-author">- Long-Time Customer</span>
+            </div>
+            <div class="testimonial-block">
+                <p>"The results are always beautifully clean, polished, and thoughtfully done. My dog leaves looking adorable and completely relaxed, which tells me everything I need to know about how well they treat the animals."</p>
+                <span class="testimonial-author">- Local Pet Parent</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="location" class="section">
+        <h2 class="section-title">Our Location & Hours</h2>
+        <div class="location-block">
+            <div class="location-info">
+                <h3>Candy's Dog Salon</h3>
+                <p><strong>Address:</strong><br>47814 Warm Springs Blvd<br>Fremont, CA 94539</p>
+                
+                <ul class="hours-list">
+                    <li><span>Monday</span> <span>9:00 AM - 6:00 PM</span></li>
+                    <li><span>Tuesday</span> <span>9:00 AM - 6:00 PM</span></li>
+                    <li class="closed"><span>Wednesday</span> <span>Closed</span></li>
+                    <li><span>Thursday</span> <span>9:00 AM - 6:00 PM</span></li>
+                    <li><span>Friday</span> <span>9:00 AM - 6:00 PM</span></li>
+                    <li><span>Saturday</span> <span>9:00 AM - 6:00 PM</span></li>
+                    <li class="closed"><span>Sunday</span> <span>Closed</span></li>
+                </ul>
+            </div>
+            <div class="map-embed">
+                <iframe 
+                    title="Candy's Dog Salon Google Maps location map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3164.7171447038165!2d-121.92388942363574!3d37.47771687206148!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x808fc6175c05b485%3A0xb5c5484111f8b302!2sCandy&#39;s%20Dog%20Salon!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <h2>Make an Appointment</h2>
+            <p>For bookings, service inquiries, or specific questions about your dog, call us directly at:</p>
+            <a href="tel:5104905160" class="phone-display">(510) 490-5160</a>
+            <p>Candy's Dog Salon — Traditional Quality & Loving Care</p>
+        </div>
+        <div class="footer-note">
+            <p>&copy; 2026 Candy's Dog Salon. All Rights Reserved. Built with traditional community values.</p>
+        </div>
+    </footer>
+
+    <script>
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('#nav-menu a');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-50% 0px -50% 0px', // Evaluates items as they cross the mid-line of the screen
+            threshold: 0
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const activeId = entry.target.getAttribute('id');
+                    
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${activeId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => sectionObserver.observe(section));
+    </script>
+</body>
+</html>
